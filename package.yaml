@@ -1,0 +1,58 @@
+name: snap-friend-list-server
+version: 0.1.0.0
+github: 'zkourouma/snap-friend-list-server'
+license: BSD3
+author: 'Zack Kourouma'
+maintainer: 'zack@kourouma.me'
+copyright: '2019 Zack Kourouma'
+
+extra-source-files:
+  - README.md
+  - ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description: Please see the README on GitHub at <https://github.com/zkourouma/snap-friend-list-server#readme>
+
+dependencies:
+  - base >= 4.7 && < 5
+
+other-modules:
+  - Paths_snap_friend_list_server
+
+library:
+  source-dirs: src
+
+executables:
+  server:
+    main: Main.hs
+    source-dirs: app
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - snap-friend-list-server
+      - aeson
+      - bytestring
+      - snap-core
+      - snap-server
+
+tests:
+  snap-friend-list-server-test:
+    main: Spec.hs
+    source-dirs: test
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - snap-friend-list-server
+
+data-files:
+  - data/*
