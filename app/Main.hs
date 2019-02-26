@@ -1,17 +1,17 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric, OverloadedStrings #-}
 module Main where
 
-import           Control.Monad                  ( mzero )
+
+import           GHC.Generics
+import           Control.Monad.IO.Class         ( liftIO )
 import           Data.Aeson                     ( FromJSON
                                                 , ToJSON
-                                                , Value(Object)
-                                                , (.:)
-                                                , (.=)
                                                 , encode
-                                                , object
-                                                , parseJSON
-                                                , toJSON
+                                                , eitherDecode
                                                 )
+import qualified Data.ByteString.Lazy          as BS
+import           Data.Text                      ( Text )
+import           Data.Either                    ( fromRight )
 import           Snap.Core                      ( MonadSnap
                                                 , Snap
                                                 , getParam
@@ -30,18 +30,15 @@ import           Paths_snap_friend_list_server
 file :: IO FilePath
 file = getDataFileName "data/friends.json"
 
+data Friend = Friend { id :: Int, name  :: Text, nickName :: Text }  deriving (Generic, Show, Eq)
+instance FromJSON Friend
+instance ToJSON Friend
+
 friends :: IO [Friend]
-friends = parseJSON <$> (readFile =<< file)
-
-data Friend = Friend { friendId :: Integer, name  :: String, nickName :: String }  deriving (Show, Eq)
-
-instance FromJSON Friend where
-  parseJSON (Object v) = Friend <$> v .: "friendId" <*> v .: "name" <*> v .: "nickName"
-  parseJSON _ = mzero
-
-instance ToJSON Friend where
-  toJSON (Friend fId n n') =
-    object [ "friendId" .= fId, "name" .= n, "nickName" .= n']
+friends = do
+  contents <- BS.readFile =<< file
+  let fs = eitherDecode contents
+  return $ fromRight [] fs
 
 main :: IO ()
 main =
@@ -52,9 +49,9 @@ site = ifTop queryHandler
 
 queryHandler :: Snap ()
 queryHandler = do
-  fs <- friends
-  q <- getParam "q"
-  maybe (writeBS fs) writeBS q
+  fs <- liftIO friends
+  q  <- getParam "q"
+  maybe (writeJSON fs) writeBS q
 
 writeJSON :: (MonadSnap m, ToJSON a) => a -> m ()
 writeJSON d = do

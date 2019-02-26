@@ -1,16 +1,16 @@
 [
   {
-    "friendId": 1,
+    "id": 1,
     "name": "socrates",
     "nickName": "taz"
-  ,
+  },
   {
-    "friendId": 2,
+    "id": 2,
     "name": "plato",
     "nickName": "plato"
   },
   {
-    "friendId": 3,
+    "id": 3,
     "name": "aristotle",
     "nickName": "ari"
   }

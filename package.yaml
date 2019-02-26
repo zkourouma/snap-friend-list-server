@@ -42,6 +42,7 @@ executables:
       - bytestring
       - snap-core
       - snap-server
+      - text
 
 tests:
   snap-friend-list-server-test:
