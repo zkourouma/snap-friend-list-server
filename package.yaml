@@ -21,12 +21,16 @@ description: Please see the README on GitHub at <https://github.com/zkourouma/sn
 
 dependencies:
   - base >= 4.7 && < 5
+  - aeson
+  - bytestring
 
 other-modules:
   - Paths_snap_friend_list_server
 
 library:
   source-dirs: src
+  dependencies:
+    - text
 
 executables:
   server:
@@ -38,11 +42,8 @@ executables:
       - -with-rtsopts=-N
     dependencies:
       - snap-friend-list-server
-      - aeson
-      - bytestring
       - snap-core
       - snap-server
-      - text
 
 tests:
   snap-friend-list-server-test:
